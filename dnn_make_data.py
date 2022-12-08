@@ -1,36 +1,12 @@
 import pandas as pd
 import numpy as np
-# import chardet
 import io
 import csv
 
 
 def main():
-    # with open('charting-m-matches.csv', 'rb') as rawdata:
-    #     result = chardet.detect(rawdata.read(100000))
-    # print(result)
     men_points = pd.read_csv("charting-m-points_new.csv", encoding='Windows-1252', dtype=str)
     wom_points = pd.read_csv("charting-w-points_new.csv", encoding='Windows-1252', dtype=str)
-
-    # men_matches = pd.read_csv("./archive/charting-m-matches.csv", usecols=['Player 1'], encoding='ascii')
-
-    # If we need to access matches csv
-    # with open("./archive/charting-m-matches.csv", 'r+', encoding="utf-8") as men_matches:
-
-    #     reader_obj = csv.DictReader(men_matches)
-      
-    #     testingIdx = 0
-    #     for row in reader_obj:
-    #         print(row)
-    #         testingIdx += 1
-    #         if (testingIdx == 2):
-    #             break
-
-    # wom_matches = pd.read_csv("charting-w-matches.csv")
-
-    #men_points = men_points[['match_id', 'Pt', 'Set1', 'Set2', 'Gm1', 'Gm2', 'PtWinner', 'Gender']]
-
-    # print(men_points.head)
 
     all_points = pd.concat([men_points, wom_points])
     all_points = all_points[['match_id', 'Pt', 'Svr', 'Set1', 'Set2', 'Gm1', 'Gm2', 'PtWinner', 'Gender']]
@@ -160,9 +136,7 @@ def main():
             prev_point_winner = str(2 - point_winner)
             point_num += 1
             start_index += 1
-        
 
-    # print(len(final_data))
     df = pd.DataFrame(final_data)
 
     df = df.sample(frac=1)
@@ -176,10 +150,6 @@ def main():
     train_set.to_csv("train_points_with_point_history.csv")
     eval_set.to_csv("eval_points_with_point_histroy.csv")
     test_set.to_csv("test_points_with_point_history.csv")
-    # print(len(eval_set))
-    # print(len(test_set))
-    # df.to_csv("data_test.csv")
-
 
 if __name__ == "__main__":
     main()
