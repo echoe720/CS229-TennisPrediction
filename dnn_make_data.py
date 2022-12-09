@@ -30,7 +30,12 @@ def main():
             point_num += 1
             point_idx += 1
             
-        prev_point_winner = str(2 - point_winner)
+        prev_point_winner = 2 - point_winner
+        if (prev_point_winner != 0 and prev_point_winner != 1):
+            #  print('reached ' + str(prev_point_winner))
+             winnersPerMatch[match_id] = 0 #edge case of winner being neither 0 or 1
+        else:
+            winnersPerMatch[match_id] = prev_point_winner
 
         max_points = max(max_points, point_num)
         point_idx += 1
@@ -133,7 +138,7 @@ def main():
                 # add all the rows in
                 final_data.append(new_row)
 
-            prev_point_winner = str(2 - point_winner)
+            prev_point_winner = 2 - point_winner
             point_num += 1
             start_index += 1
 
@@ -148,7 +153,7 @@ def main():
     test_set = df.iloc[eighty_percent_split + ten_percent_split:, :]
 
     train_set.to_csv("train_points_with_point_history.csv")
-    eval_set.to_csv("eval_points_with_point_histroy.csv")
+    eval_set.to_csv("eval_points_with_point_history.csv")
     test_set.to_csv("test_points_with_point_history.csv")
 
 if __name__ == "__main__":

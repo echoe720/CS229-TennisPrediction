@@ -8,7 +8,7 @@ def main():
     wom_points = pd.read_csv("charting-w-points_new.csv", encoding='Windows-1252', dtype=str)
 
     all_points = pd.concat([men_points, wom_points])
-    all_points = all_points[['match_id', 'Pt', 'Svr', 'Set1', 'Set2', 'Gm1', 'Gm2', 'PtWinner', 'Gender']]
+    all_points = all_points[['match_id', 'Pt', 'Set1', 'Set2', 'Gm1', 'Gm2', 'PtWinner', 'Gender']]
 
     unique_matches = len(all_points[['match_id']].drop_duplicates())
 
@@ -16,22 +16,31 @@ def main():
 
     winnersPerMatch = {} # stores winners of each match in order.
     point_idx = 0
+
     # Add Y-Values as final column
-    for i in range(unique_matches):
+    while (point_idx < len(all_points)):
+    # for i in range(unique_matches):
         match_id = all_points_np[point_idx][0]
         point_num = 0
         prev_point_winner = -1
 
         while (point_idx < all_points_np.shape[0] and all_points_np[point_idx][0] == match_id):
             curr_match = all_points_np[point_idx]
-            point_winner = int(curr_match[7])
+            point_winner = int(curr_match[6])
+            # print(point_winner)
+            # if (point_winner != 1 and point_winner != 2):
+                # print('reached point winner' + str(point_winner))
             point_idx += 1
 
-        prev_point_winner = str(2 - point_winner)
+        prev_point_winner = 2 - point_winner
         point_num += 1
         point_idx += 1
 
-        winnersPerMatch[match_id] = prev_point_winner
+        if (prev_point_winner != 0 and prev_point_winner != 1):
+            #  print('reached ' + str(prev_point_winner))
+             winnersPerMatch[match_id] = 0 #edge case of winner being neither 0 or 1
+        else:
+            winnersPerMatch[match_id] = prev_point_winner
 
     start_index = 0
     final_data = []
@@ -48,11 +57,11 @@ def main():
 
         while (start_index < all_points_np.shape[0] and all_points_np[start_index][0] == match_id):
             curr_match = all_points_np[start_index]
-            point_winner = int(curr_match[7])
-            p1sets = float(curr_match[3])
-            p2sets = float(curr_match[4])
-            p1games = float(curr_match[5])
-            p2games = float(curr_match[6])
+            point_winner = int(curr_match[6])
+            p1sets = float(curr_match[2])
+            p2sets = float(curr_match[3])
+            p1games = float(curr_match[4])
+            p2games = float(curr_match[5])
 
             point_history.append(str(2 - point_winner))
             
@@ -86,8 +95,8 @@ def main():
                     Y-value: who won the match (1 if p1 won, 0 if p2 won)                          !
                 """
                 new_row = []
-                new_row.append(curr_match[8]) #Gender of the players
-                new_row.append(str(2 - int(all_points_np[0][2]))) # Who served first
+                new_row.append(curr_match[7]) #Gender of the players
+                # new_row.append(str(2 - int(all_points_np[0][2]))) # Who served first
                 new_row.append(p1sets) #Number of sets player 1 has won
                 new_row.append(p2sets) #Number of sets player 2 has won
                 new_row.append(p1games) #Number of games player 1 has won in the current set
@@ -135,7 +144,7 @@ def main():
                 # add all the rows in
                 final_data.append(new_row)
 
-            prev_point_winner = str(2 - point_winner)
+            prev_point_winner = 2 - point_winner
             point_num += 1
             start_index += 1
         
@@ -152,9 +161,9 @@ def main():
     test_set = df.iloc[eighty_percent_split + ten_percent_split:, :]
 
 
-    train_set.to_csv("train_points_data.csv")
-    test_set.to_csv("val_points_data.csv")
-    test_set.to_csv("test_points_data.csv")
+    train_set.to_csv("train_points_data_original.csv")
+    eval_set.to_csv("eval_points_data_original.csv")
+    test_set.to_csv("test_points_data_original.csv")
 
 if __name__ == "__main__":
     main()
